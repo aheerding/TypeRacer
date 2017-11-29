@@ -18,7 +18,7 @@ public class Client {
 
   //attributes
   private String name = "";
-  private final String IP_ADDRESS = "192.168.0.14"; //MUST CHANGE FOR NEW MACHINE
+  private final String IP_ADDRESS = "129.21.122.100"; //MUST CHANGE FOR NEW MACHINE
   private final int PORT = 16789;
   private InputStream in = null;
   private ObjectInputStream obIn = null;

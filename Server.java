@@ -79,19 +79,31 @@ public class Server {
         tr = (TypeRace) obIn.readObject();
 
         // test
-        //System.out.println(tr.getPTyped());
 
-        //split and compare the words
-        String[] orgParagraph = PARAGRAPH.split(" ");
-        String[] typedParagraph = tr.getPTyped().split(" ");
+        //compare the pargraphs
+        String typed = tr.getPTyped();
 
-        System.out.println(orgParagraph.length);
-        System.out.println(typedParagraph.length);
-        int count = 0;
-        for(int i = 0; i < orgParagraph.length; i++){
-          if(!(i <= typedParagraph.length) || !orgParagraph[i].equals(typedParagraph[i]) || i > typedParagraph.length){
-            count++;
-          }
+        int count = 0; // count the number of errors
+
+        //try to compare each character in the string
+        //if the typed paragraph is longer, increment the num errors by the number of extra characters
+        if(typed.length() > PARAGRAPH.length()){
+          //compare each character in the string
+          for(int i = 0; i < PARAGRAPH.length(); i++){
+            char c1 = PARAGRAPH.charAt(i);
+            char c2 = typed.charAt(i);
+            if(c1 != c2){
+              count++;
+            }
+          count += (typed.length() - PARAGRAPH.length()); //add the difference
+        } else {
+          for(int i = 0; i < typed.length(); i++){
+            char c1 = PARAGRAPH.charAt(i);
+            char c2 = typed.charAt(i);
+            if(c1 != c2){
+              count++;
+            }
+          count += (PARAGRAPH.length() - typed.length());
         }
 
         tr.setNumErrors(count);
