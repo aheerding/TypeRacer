@@ -75,7 +75,30 @@ public class Server {
         obOut.writeObject(tr);
         obOut.flush();
 
-      } catch (IOException ioe) {
+        //retrieve typeRace object
+        tr = (TypeRace) obIn.readObject();
+
+        // test
+        //System.out.println(tr.getPTyped());
+
+        //split and compare the words
+        String[] orgParagraph = PARAGRAPH.split(" ");
+        String[] typedParagraph = tr.getPTyped().split(" ");
+
+        System.out.println(orgParagraph.length);
+        System.out.println(typedParagraph.length);
+        int count = 0;
+        for(int i = 0; i < orgParagraph.length; i++){
+          if(!(i <= typedParagraph.length) || !orgParagraph[i].equals(typedParagraph[i]) || i > typedParagraph.length){
+            count++;
+          }
+        }
+
+        tr.setNumErrors(count);
+        System.out.println(count);
+
+
+      } catch (ClassNotFoundException | IOException ioe) {
         System.out.println("Error connecting to client");
         ioe.printStackTrace();
       }

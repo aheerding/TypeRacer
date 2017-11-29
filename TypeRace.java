@@ -11,6 +11,7 @@ public class TypeRace implements Serializable{
   private String pToType = ""; // paragraph sent out for clients to type
   private String pTyped = ""; //player's typed paragraph - this is grabbed from the textArea in the client
   private String name = ""; //player's name - set when the server sends over the original typeRace object
+  private int numErrors = 0;
   private static final long serialVersionUID = -883901947013771075L;
 
   public TypeRace (String _pToType) {
@@ -22,6 +23,14 @@ public class TypeRace implements Serializable{
     return pToType;
   } // end getpToType
 
+  public String getPTyped() {
+    return pTyped;
+  }
+
+  public int getNumErrors() {
+    return numErrors;
+  }
+
   //Setters
   public void setpTyped(String _pTyped) {
     pTyped = _pTyped;
@@ -29,6 +38,10 @@ public class TypeRace implements Serializable{
 
   public void setName(String _name) {
     name = _name;
+  }
+
+  public void setNumErrors(int _numErrors) {
+    numErrors = _numErrors;
   }
 
   public static void main(String[] args) { } // main for testing purposes

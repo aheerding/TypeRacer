@@ -18,7 +18,7 @@ public class Client {
 
   //attributes
   private String name = "";
-  private final String IP_ADDRESS = "129.21.123.1"; //MUST CHANGE FOR NEW MACHINE
+  private final String IP_ADDRESS = "192.168.0.14"; //MUST CHANGE FOR NEW MACHINE
   private final int PORT = 16789;
   private InputStream in = null;
   private ObjectInputStream obIn = null;
@@ -95,7 +95,7 @@ public class Client {
       //display GUI with a waiting for opponents message in textArea
       showRaceFrame();
       //wait for server to send over the typeRace object
-      TypeRace tr = (TypeRace) obIn.readObject();
+      tr = (TypeRace) obIn.readObject();
       //display pToType in textArea
       jtaPtoType.setText(tr.getpToType());
       // once user clicks the finished button get text from the textArea and send to server
@@ -118,7 +118,14 @@ public class Client {
 
   //add the text from jtaPTyped to the typeRace object and send it back to the server
   public void sendFinished() {
-
+    try {
+      tr.setpTyped(jtaPTyped.getText());
+      obOut.writeObject(tr);
+      obOut.flush();
+    } catch(IOException ioe) {
+      System.out.println("An error occured.");
+      ioe.printStackTrace();
+    }
   }
 
   //set up and show the racing window
