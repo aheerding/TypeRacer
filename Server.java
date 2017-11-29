@@ -11,6 +11,12 @@ import java.net.*;
 public class Server {
   //attributes
   private int clientCount = 0; // keeps track of number of connected clients
+  private final int NUM_CLIENTS = 2; // desired number of competitors
+  private final String PARAGRAPH = "Mr. and Mrs. Dursley, of number four, " +
+    "Privet Drive, were proud to say that they were perfectly normal, thank " +
+    "you very much. They were the last people you’d expect to be involved in " +
+    "anythingstrange or mysterious, because they just didn’t hold with such" +
+    " nonsense.";
 
   public static void main(String[] args) {
     new Server();
@@ -31,7 +37,7 @@ public class Server {
         ThreadedServer ts = new ThreadedServer(cs);
         ts.start();
         clientCount++;
-      } while (clientCount < 4) // continue accepting clients until we have 4 connected
+      } while (clientCount < NUM_CLIENTS); // continue accepting clients until we have enough connected
     } catch(IOException ioe){
       System.out.println("Something went wrong with connection");
       ioe.printStackTrace();
@@ -41,7 +47,7 @@ public class Server {
   class ThreadedServer extends Thread {
     private Socket cs = null; // Client Socket
 
-    public ThreadedServer(_cs) {
+    public ThreadedServer(Socket _cs) {
       cs = _cs;
     } // end ThreadedServer constructor
 
@@ -58,7 +64,7 @@ public class Server {
       //send list of winners back to client
 
       //close connections
-      
+
     } // end run
   } // end class ThreadedServer
 } // end class Server
