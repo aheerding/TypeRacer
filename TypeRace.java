@@ -3,6 +3,7 @@
     Typerace object holds all the data needed for TypeRacer game. One object is
     generated per player and is sent bewteen the server and client.
 */
+import java.io.Serializable;
 
 public class TypeRace implements Serializable{
 
@@ -10,9 +11,10 @@ public class TypeRace implements Serializable{
   private String pToType = ""; // paragraph sent out for clients to type
   private String pTyped = ""; //player's typed paragraph - this is grabbed from the textArea in the client
   private String name = ""; //player's name - set when the server sends over the original typeRace object
+  private static final long serialVersionUID = -883901947013771075L;
 
-  public TypeRace () {
-
+  public TypeRace (String _pToType) {
+    pToType = _pToType;
   } // end constructor
 
   //Getters

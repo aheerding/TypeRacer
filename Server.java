@@ -12,11 +12,15 @@ public class Server {
   //attributes
   private int clientCount = 0; // keeps track of number of connected clients
   private final int NUM_CLIENTS = 2; // desired number of competitors
-  private final String PARAGRAPH = "Mr. and Mrs. Dursley, of number four, " +
-    "Privet Drive, were proud to say that they were perfectly normal, thank " +
-    "you very much. They were the last people you’d expect to be involved in " +
-    "anythingstrange or mysterious, because they just didn’t hold with such" +
+  private final String PARAGRAPH = "Mr. and Mrs. Dursley, of number four, \n" +
+    "Privet Drive, were proud to say that they were perfectly normal, thank \n" +
+    "you very much. They were the last people you'd expect to be involved in \n" +
+    "anything strange or mysterious, because they just didn't hold with such\n" +
     " nonsense.";
+  private InputStream in = null;
+  private ObjectInputStream obIn = null;
+  private OutputStream out = null;
+  private ObjectOutputStream obOut = null;
 
   public static void main(String[] args) {
     new Server();
@@ -49,13 +53,36 @@ public class Server {
 
     public ThreadedServer(Socket _cs) {
       cs = _cs;
+
+      //make sure you actually hit the run method
+
     } // end ThreadedServer constructor
 
     @Override
     public void run() {
+      //set up IO
+      System.out.println("In run");
+      try {
+        out = cs.getOutputStream();
+        obOut = new ObjectOutputStream(out);
+
+        in = cs.getInputStream();
+        obIn = new ObjectInputStream(in);
+
+        //create typeRace object
+        TypeRace tr = new TypeRace(PARAGRAPH);
+
+        obOut.writeObject(tr);
+        obOut.flush();
+
+      } catch (IOException ioe) {
+        System.out.println("Error connecting to client");
+        ioe.printStackTrace();
+      }
+
       //send over the typeRace object
 
-      // recieve typeRace object from cluent
+      // recieve typeRace object from client
 
       //compare the pToType and pTyped
 
