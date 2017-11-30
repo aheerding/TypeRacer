@@ -95,6 +95,7 @@ public class Server {
             if(c1 != c2){
               count++;
             }
+          }
           count += (typed.length() - PARAGRAPH.length()); //add the difference
         } else {
           for(int i = 0; i < typed.length(); i++){
@@ -103,11 +104,16 @@ public class Server {
             if(c1 != c2){
               count++;
             }
+          }
           count += (PARAGRAPH.length() - typed.length());
         }
 
         tr.setNumErrors(count);
-        System.out.println(count);
+        //System.out.println(count);
+        String win = tr.getName() + " " + count;
+
+        //add the winner to the ArrayList
+
 
 
       } catch (ClassNotFoundException | IOException ioe) {
