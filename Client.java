@@ -89,6 +89,9 @@ public class Client {
             //System.out.println(m.toString());
             try{
                 obOut.writeObject(m);
+                obOut.flush();
+                System.out.println("Sending message");
+                System.out.println(m.toString());
             } catch (IOException ioe){
                 ioe.printStackTrace();
             }
@@ -318,7 +321,7 @@ public class Client {
                     //System.out.println(winners);
                     jpShowRank = new JPanel(new GridLayout(4, 0));
                     for(int i = 0; i < winners.size(); i++){
-                      jpShowRank.add(new JLabel(i + ". " + (String)winners.get(i)));
+                      jpShowRank.add(new JLabel((i+1) + ". " + (String)winners.get(i)));
                     }
                     showRankings();
                   }

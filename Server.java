@@ -42,21 +42,24 @@ public class Server {
       Socket cs = null; // client socket
 
       //wait for client connection
-      do {
+      //do {
+      while(true){
         System.out.println("Waiting for a connection..."); // mostly so we can see that the server is actually running
         cs = ss.accept();
         ThreadedServer ts = new ThreadedServer(cs);
         ts.start();
+      }
+
         /*threads.add(ts);
         if(threads.size() == 4){
           for(ThreadedServer t : threads)
           {
             t.start();
           }
-        }*/
+        }
 
         clientCount++;
-      } while (clientCount < NUM_CLIENTS); // continue accepting clients until we have enough connected
+      } while (clientCount < NUM_CLIENTS); // continue accepting clients until we have enough connected*/
     } catch(IOException ioe){
       System.out.println("Something went wrong with connection");
       ioe.printStackTrace();
@@ -123,12 +126,12 @@ public class Server {
             }
 
             tr.setNumErrors(count);
-            System.out.println(count);
+            //System.out.println(count);
             String win = tr.getName() + " " + count;
 
             //add the winner to the vector
             winners.add(win);
-            System.out.println(winners.size());
+            //System.out.println(winners.size());
             //if the winners list is full, send it out to all the Clients
             if(winners.size() == 4){
               TypeRace raceOver = new TypeRace("");
