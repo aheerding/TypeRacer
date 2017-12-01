@@ -7,11 +7,12 @@
 */
 import java.io.*;
 import java.net.*;
+import java.util.Vector;
 
 public class Server {
   //attributes
   private int clientCount = 0; // keeps track of number of connected clients
-  private final int NUM_CLIENTS = 2; // desired number of competitors
+  private final int NUM_CLIENTS = 4; // desired number of competitors
   private final String PARAGRAPH = "Mr. and Mrs. Dursley, of number four, \n" +
     "Privet Drive, were proud to say that they were perfectly normal, thank \n" +
     "you very much. They were the last people you'd expect to be involved in \n" +
@@ -21,6 +22,8 @@ public class Server {
   private ObjectInputStream obIn = null;
   private OutputStream out = null;
   private ObjectOutputStream obOut = null;
+  private Vector<ObjectOutputStream> outputs;
+  private Vector<String> winners; //store userNames of all logged in members
 
   public static void main(String[] args) {
     new Server();
@@ -28,6 +31,8 @@ public class Server {
 
   public Server () {
     //try and set up a server
+    outputs =  new Vector<ObjectOutputStream>();
+    winners = new Vector<String>();
     try {
       //set up a port
       ServerSocket ss = new ServerSocket(16789);
@@ -66,11 +71,18 @@ public class Server {
         out = cs.getOutputStream();
         obOut = new ObjectOutputStream(out);
 
+        outputs.add(obOut); // store all players streams
+
         in = cs.getInputStream();
         obIn = new ObjectInputStream(in);
 
         //create typeRace object
         TypeRace tr = new TypeRace(PARAGRAPH);
+
+        //wait till 4 people connect
+        //do{
+
+        //} while(clientCount < 2);
 
         obOut.writeObject(tr);
         obOut.flush();
@@ -112,10 +124,18 @@ public class Server {
         //System.out.println(count);
         String win = tr.getName() + " " + count;
 
-        //add the winner to the ArrayList
+        //add the winner to the vector
+        winners.add(win);
 
-
-
+        //if the winners list is full, send it out to all the Clients
+        //if(winners.size() == 4){
+          TypeRace raceOver = new TypeRace("");
+          raceOver.setWinners(winners);
+          for(ObjectOutputStream o : outputs){
+            o.writeObject(raceOver);
+            o.flush();
+          }
+        //}
       } catch (ClassNotFoundException | IOException ioe) {
         System.out.println("Error connecting to client");
         ioe.printStackTrace();

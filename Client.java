@@ -13,12 +13,13 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.ConnectException;
+import java.util.Vector;
 
 public class Client {
 
   //attributes
   private String name = "";
-  private final String IP_ADDRESS = "192.168.0.11"; //MUST CHANGE FOR NEW MACHINE
+  private final String IP_ADDRESS = "129.21.122.14"; //MUST CHANGE FOR NEW MACHINE
   private final int PORT = 16789;
   private InputStream in = null;
   private ObjectInputStream obIn = null;
@@ -37,6 +38,10 @@ public class Client {
   private JTextArea jtaPTyped = null;
   private JButton jbFinished = null; // button displayed at the bottom of the window - once user clicks it, retrieve paragraph and send to server
 
+  //Results window
+  private JFrame jfResults = null;
+  private JPanel jpResults = null;
+  private JLabel jlResults = null;
   public static void main(String[] args) {
     new Client();
   } // end main
@@ -92,13 +97,12 @@ public class Client {
       //hide login Window
       jfLogin.setVisible(false);
 
-      //display GUI with a waiting for opponents message in textArea
+      //display GUI
       showRaceFrame();
       //wait for server to send over the typeRace object
       tr = (TypeRace) obIn.readObject();
       //display pToType in textArea
       jtaPtoType.setText(tr.getpToType());
-      // once user clicks the finished button get text from the textArea and send to server
 
       //wait for server to send back the victory list
 
@@ -120,9 +124,18 @@ public class Client {
   public void sendFinished() {
     try {
       tr.setpTyped(jtaPTyped.getText());
+      tr.setName(name);
       obOut.writeObject(tr);
       obOut.flush();
-    } catch(IOException ioe) {
+
+      //hide playing JFrame
+      showWinner();
+
+      tr = (TypeRace) obIn.readObject();
+      //get winners
+      Vector<String> winners = tr.getWinners();
+      System.out.println(winners);
+    } catch(ClassNotFoundException | IOException ioe) {
       System.out.println("An error occured.");
       ioe.printStackTrace();
     }
@@ -167,6 +180,20 @@ public class Client {
     jfRace.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     jfRace.setVisible(true);
   } // end showRaceFrame
+
+  //close the racing window and display a waiting message until the results come in
+  public void showWinner() {
+    jfRace.setVisible(false);
+    jfResults = new JFrame();
+    jpResults = new JPanel(new BorderLayout());
+    jlResults =  new JLabel("Waiting for other players...");
+    jpResults.add(jlResults, BorderLayout.CENTER);
+    jfResults.add(jpResults);
+    jfResults.pack();
+    jfResults.setLocationRelativeTo(null);
+    jfResults.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    jfResults.setVisible(true);
+  }
 
   //closes all connections
   public void disconnect() {
