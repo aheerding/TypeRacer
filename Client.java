@@ -311,7 +311,7 @@ public class Client {
                     //System.out.println(winners);
                     jpShowRank = new JPanel(new GridLayout(4, 0));
                     for(int i = 0; i < winners.size(); i++){
-                      jpShowRank.add(new JLabel((String)winners.get(i)));
+                      jpShowRank.add(new JLabel(i + ". " + (String)winners.get(i)));
                     }
                     showRankings();
                     //jpResults = new JPanel(new BorderLayout());
