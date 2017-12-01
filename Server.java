@@ -24,6 +24,7 @@ public class Server {
   private ObjectOutputStream obOut = null;
   private Vector<ObjectOutputStream> outputs;
   private Vector<String> winners; //store userNames of all logged in members
+  private Vector<ThreadedServer> threads = null;
 
   public static void main(String[] args) {
     new Server();
@@ -33,6 +34,7 @@ public class Server {
     //try and set up a server
     outputs =  new Vector<ObjectOutputStream>();
     winners = new Vector<String>();
+    threads = new Vector<ThreadedServer>();
     try {
       //set up a port
       ServerSocket ss = new ServerSocket(16789);
@@ -45,6 +47,14 @@ public class Server {
         cs = ss.accept();
         ThreadedServer ts = new ThreadedServer(cs);
         ts.start();
+        /*threads.add(ts);
+        if(threads.size() == 4){
+          for(ThreadedServer t : threads)
+          {
+            t.start();
+          }
+        }*/
+
         clientCount++;
       } while (clientCount < NUM_CLIENTS); // continue accepting clients until we have enough connected
     } catch(IOException ioe){
@@ -58,9 +68,6 @@ public class Server {
 
     public ThreadedServer(Socket _cs) {
       cs = _cs;
-
-      //make sure you actually hit the run method
-
     } // end ThreadedServer constructor
 
     @Override
@@ -79,61 +86,70 @@ public class Server {
         //create typeRace object
         TypeRace tr = new TypeRace(PARAGRAPH);
 
-        //wait till 4 people connect
-        //do{
-
-        //} while(clientCount < 2);
-
         obOut.writeObject(tr);
         obOut.flush();
 
-        //retrieve typeRace object
-        tr = (TypeRace) obIn.readObject();
+        Object ob = null;
+        while((ob=obIn.readObject()) != null){
+          if(ob instanceof TypeRace){
+            tr = (TypeRace) ob;
 
-        // test
+            //compare the pargraphs
+            String typed = tr.getPTyped();
 
-        //compare the pargraphs
-        String typed = tr.getPTyped();
+            int count = 0; // count the number of errors
 
-        int count = 0; // count the number of errors
-
-        //try to compare each character in the string
-        //if the typed paragraph is longer, increment the num errors by the number of extra characters
-        if(typed.length() > PARAGRAPH.length()){
-          //compare each character in the string
-          for(int i = 0; i < PARAGRAPH.length(); i++){
-            char c1 = PARAGRAPH.charAt(i);
-            char c2 = typed.charAt(i);
-            if(c1 != c2){
-              count++;
+            //try to compare each character in the string
+            //if the typed paragraph is longer, increment the num errors by the number of extra characters
+            if(typed.length() > PARAGRAPH.length()){
+              //compare each character in the string
+              for(int i = 0; i < PARAGRAPH.length(); i++){
+                char c1 = PARAGRAPH.charAt(i);
+                char c2 = typed.charAt(i);
+                if(c1 != c2){
+                  count++;
+                }
+              }
+              count += (typed.length() - PARAGRAPH.length()); //add the difference
+            } else {
+              for(int i = 0; i < typed.length(); i++){
+                char c1 = PARAGRAPH.charAt(i);
+                char c2 = typed.charAt(i);
+                if(c1 != c2){
+                  count++;
+                }
+              }
+              count += (PARAGRAPH.length() - typed.length());
             }
-          }
-          count += (typed.length() - PARAGRAPH.length()); //add the difference
-        } else {
-          for(int i = 0; i < typed.length(); i++){
-            char c1 = PARAGRAPH.charAt(i);
-            char c2 = typed.charAt(i);
-            if(c1 != c2){
-              count++;
+
+            tr.setNumErrors(count);
+            System.out.println(count);
+            String win = tr.getName() + " " + count;
+
+            //add the winner to the vector
+            winners.add(win);
+            System.out.println(winners.size());
+            //if the winners list is full, send it out to all the Clients
+            if(winners.size() == 4){
+              TypeRace raceOver = new TypeRace("");
+              raceOver.setWinners(winners);
+              for(ObjectOutputStream o : outputs){
+                o.writeObject(raceOver);
+                o.flush();
+              }
             }
-          }
-          count += (PARAGRAPH.length() - typed.length());
-        }
-
-        tr.setNumErrors(count);
-        //System.out.println(count);
-        String win = tr.getName() + " " + count;
-
-        //add the winner to the vector
-        winners.add(win);
-
-        //if the winners list is full, send it out to all the Clients
-        if(winners.size() == 4){
-          TypeRace raceOver = new TypeRace("");
-          raceOver.setWinners(winners);
-          for(ObjectOutputStream o : outputs){
-            o.writeObject(raceOver);
-            o.flush();
+          } else if(ob instanceof Message){
+                Message msg = (Message)ob;
+                if(msg == null){
+                    for(ObjectOutputStream o : outputs){
+                        o.writeObject(new Message("Server", "A client has disconnected"));
+                    }
+                }
+                for(ObjectOutputStream o : outputs){
+                    System.out.println("Sending message from server.");
+                    o.writeObject(msg);
+                    o.flush();
+                }
           }
         }
       } catch (ClassNotFoundException | IOException ioe) {
