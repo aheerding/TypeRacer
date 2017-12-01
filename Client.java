@@ -49,7 +49,8 @@ public class Client {
   public Client () {
     //display login box asking user for userName
     jfLogin = new JFrame();
-    JPanel jpLogin = new JPanel();
+    JPanel jpLogin = new JPanel(new BorderLayout());
+    JPanel jpName = new JPanel();
     JLabel jlLogin = new JLabel("Enter a username:");
     jtfName = new JTextField(10);
     jbConnect = new JButton("Connect");
@@ -71,12 +72,14 @@ public class Client {
     });
 
     //set up login window
-    jpLogin.add(jlLogin);
-    jpLogin.add(jtfName);
-    jpLogin.add(jbConnect);
+    jpName.add(jlLogin);
+    jpName.add(jtfName);
+    jpLogin.add(jpName, BorderLayout.CENTER);
+    jpLogin.add(jbConnect, BorderLayout.SOUTH);
     jfLogin.add(jpLogin);
 
     jfLogin.pack();
+    jfLogin.setSize(500, 150);
     jfLogin.setLocationRelativeTo(null);
     jfLogin.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     jfLogin.setVisible(true);
@@ -136,12 +139,16 @@ public class Client {
       Vector<String> winners = tr.getWinners();
       //System.out.println(winners);
       //get winners and display it on the JFrame
-      String allWinners = "";
-      for(String s : winners){
-        allWinners += s + "\n";
-      }
+      //convert to string array and set it as a JList
+      //String allWinners = "";
+      //for(String s : winners){
+      //  allWinners += s + "\n";
+      //}
+      JList jlWinners = new JList(winners);
+      jlResults.setText("");
+      jpResults.add(jlWinners, BorderLayout.CENTER);
       //System.out.println(allWinners);
-      jlResults.setText(allWinners);
+      //jlResults.setText(allWinners);
     } catch(ClassNotFoundException | IOException ioe) {
       System.out.println("An error occured.");
       ioe.printStackTrace();
@@ -152,14 +159,18 @@ public class Client {
   public void showRaceFrame() {
     System.out.println("In showRaceFrame"); // testing purposes
     jfRace = new JFrame();
-    JPanel jpRace = new JPanel();
+    JPanel jpRace = new JPanel(new BorderLayout());
     JPanel jpToType = new JPanel();
     JPanel jpTyped = new JPanel();
     JLabel jlToType = new JLabel("Text to type: ");
-    jtaPtoType = new JTextArea(30, 20);
+    jtaPtoType = new JTextArea(5, 40);
+    jtaPtoType.setLineWrap(true);
+    jtaPtoType.setWrapStyleWord(true);
     jtaPtoType.setEditable(false);
     JLabel jlType = new JLabel("Your typing: ");
-    jtaPTyped = new JTextArea(30, 20);
+    jtaPTyped = new JTextArea(5, 40);
+    jtaPTyped.setLineWrap(true);
+    jtaPTyped.setWrapStyleWord(true);
     JButton jbFinished = new JButton("Finish");
 
     //TODO: add actionlistener to send the typeRace object back
@@ -171,18 +182,20 @@ public class Client {
     });
 
     jpToType.add(jlToType);
-    jpToType.add(jtaPtoType);
+    JScrollPane jspToType = new JScrollPane(jtaPtoType);
+    jpToType.add(jspToType);
     jpRace.add(jpToType, BorderLayout.NORTH);
 
     jpTyped.add(jlType);
-    jpTyped.add(jtaPTyped);
+    JScrollPane jspTyped = new JScrollPane(jtaPTyped);
+    jpTyped.add(jspTyped);
     jpRace.add(jpTyped, BorderLayout.CENTER);
     jpRace.add(jbFinished, BorderLayout.SOUTH);
 
     jfRace.add(jpRace);
 
     jfRace.pack();
-    jfRace.setSize(1000, 500);
+    jfRace.setSize(700, 350);
     jfRace.setLocationRelativeTo(null);
     jfRace.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     jfRace.setVisible(true);

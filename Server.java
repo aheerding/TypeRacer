@@ -13,10 +13,10 @@ public class Server {
   //attributes
   private int clientCount = 0; // keeps track of number of connected clients
   private final int NUM_CLIENTS = 4; // desired number of competitors
-  private final String PARAGRAPH = "Mr. and Mrs. Dursley, of number four, \n" +
-    "Privet Drive, were proud to say that they were perfectly normal, thank \n" +
-    "you very much. They were the last people you'd expect to be involved in \n" +
-    "anything strange or mysterious, because they just didn't hold with such\n" +
+  private final String PARAGRAPH = "Mr. and Mrs. Dursley, of number four, " +
+    "Privet Drive, were proud to say that they were perfectly normal, thank " +
+    "you very much. They were the last people you'd expect to be involved in " +
+    "anything strange or mysterious, because they just didn't hold with such" +
     " nonsense.";
   private InputStream in = null;
   private ObjectInputStream obIn = null;
