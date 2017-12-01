@@ -128,14 +128,14 @@ public class Server {
         winners.add(win);
 
         //if the winners list is full, send it out to all the Clients
-        //if(winners.size() == 4){
+        if(winners.size() == 4){
           TypeRace raceOver = new TypeRace("");
           raceOver.setWinners(winners);
           for(ObjectOutputStream o : outputs){
             o.writeObject(raceOver);
             o.flush();
           }
-        //}
+        }
       } catch (ClassNotFoundException | IOException ioe) {
         System.out.println("Error connecting to client");
         ioe.printStackTrace();

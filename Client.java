@@ -134,7 +134,14 @@ public class Client {
       tr = (TypeRace) obIn.readObject();
       //get winners
       Vector<String> winners = tr.getWinners();
-      System.out.println(winners);
+      //System.out.println(winners);
+      //get winners and display it on the JFrame
+      String allWinners = "";
+      for(String s : winners){
+        allWinners += s + "\n";
+      }
+      //System.out.println(allWinners);
+      jlResults.setText(allWinners);
     } catch(ClassNotFoundException | IOException ioe) {
       System.out.println("An error occured.");
       ioe.printStackTrace();
