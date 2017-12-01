@@ -1,11 +1,4 @@
-/** @author Alex Heerding
-    @version 1.0
-    Type racing game client. Clients will boot up and prompt the user for a
-    username. Clients will store that username and attempt to connect to the
-    Server. Once the server sends over a typeRace object, the client will
-    display the paragraph. Once the user presses "Finish" the text in the
-    textArea will be added and sent back to the server to be evaluated.
-*/
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,11 +8,21 @@ import java.net.Socket;
 import java.net.ConnectException;
 import java.util.Vector;
 
+/**
+    Type racing game client. Clients will boot up and prompt the user for a
+    username. Clients will store that username and attempt to connect to the
+    Server. Once the server sends over a typeRace object, the client will
+    display the paragraph. Once the user presses "Finish" the text in the
+    textArea will be added and sent back to the server to be evaluated.
+    @author Alex Heerding
+    @version 1.0
+*/
+
 public class Client {
 
   //attributes
   private String name = "";
-  private final String IP_ADDRESS = "192.168.0.11"; //MUST CHANGE FOR NEW MACHINE
+  private final String IP_ADDRESS = "129.21.122.14"; //MUST CHANGE FOR NEW MACHINE
   private final int PORT = 16789;
   private InputStream in = null;
   private ObjectInputStream obIn = null;
@@ -149,7 +152,9 @@ public class Client {
     jfLogin.setVisible(true);
   } // end constructor
 
-  //attempts a connection with the server
+  /**
+    attempts a connection with the server. ferwinfjriagbrioabhrfajfbhs
+  */
   public void connect() {
     //try to connect to serve
     try {
@@ -166,6 +171,8 @@ public class Client {
 
       //hide login Window
       jfLogin.setVisible(false);
+      jfLogin.dispose();
+      jfLogin = null;
 
       //display GUI
       showRaceFrame();
@@ -314,10 +321,6 @@ public class Client {
                       jpShowRank.add(new JLabel(i + ". " + (String)winners.get(i)));
                     }
                     showRankings();
-                    //jpResults = new JPanel(new BorderLayout());
-                    //JList jlWinners = new JList(winners);
-                    //jlResults.setText("");
-                    //jpResults.add(jlWinners, BorderLayout.CENTER);
                   }
                 }
               }
