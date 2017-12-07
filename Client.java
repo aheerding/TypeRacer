@@ -22,7 +22,7 @@ public class Client {
 
   //attributes
   private String name = "";
-  private final String IP_ADDRESS = "129.21.122.14"; //MUST CHANGE FOR NEW MACHINE
+  private final String IP_ADDRESS = "129.21.121.144"; //MUST CHANGE FOR NEW MACHINE
   private final int PORT = 16789;
   private InputStream in = null;
   private ObjectInputStream obIn = null;
@@ -45,7 +45,8 @@ public class Client {
   private JFrame jfRace = null; // JFrame that will display the racing minigame
   private JTextArea jtaPtoType = null;
   private JTextArea jtaPTyped = null;
-  private JButton jbFinished = null; // button displayed at the bottom of the window - once user clicks it, retrieve paragraph and send to
+  // button displayed at the bottom of the window - once user clicks it, retrieve paragraph and send to
+  private JButton jbFinished = null;
 
   //Waiting Window
   private JFrame jfWait = null;
@@ -106,6 +107,7 @@ public class Client {
             //System.out.println(m.toString());
             try{
                 obOut.writeObject(m);
+                obOut.flush();
             } catch (IOException ioe){
                 ioe.printStackTrace();
             }
@@ -164,11 +166,10 @@ public class Client {
       //System.out.println("In connect");
       Socket s = new Socket(IP_ADDRESS, PORT);
 
-      in = s.getInputStream();
-      obIn = new ObjectInputStream(in);
-
       out = s.getOutputStream();
       obOut = new ObjectOutputStream(out);
+      in = s.getInputStream();
+      obIn = new ObjectInputStream(in);
 
       it.start();
 
@@ -294,7 +295,9 @@ public class Client {
       public void run(){
             Object ob = null;
             try {
-              while((ob=obIn.readObject()) != null){
+              //while((ob=obIn.readObject()) != null)
+              while(true){
+                ob=obIn.readObject();
                 //System.out.println(ob);
                 if(ob instanceof Message){
                       Message m = (Message) ob;

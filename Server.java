@@ -18,10 +18,6 @@ public class Server {
     "you very much. They were the last people you'd expect to be involved in " +
     "anything strange or mysterious, because they just didn't hold with such" +
     " nonsense.";
-  private InputStream in = null;
-  private ObjectInputStream obIn = null;
-  private OutputStream out = null;
-  private ObjectOutputStream obOut = null;
   private Vector<ObjectOutputStream> outputs;
   private Vector<String> winners; //store userNames of all logged in members
   private Vector<ThreadedServer> threads = null;
@@ -42,24 +38,12 @@ public class Server {
       Socket cs = null; // client socket
 
       //wait for client connection
-      //do {
       while(true){
         System.out.println("Waiting for a connection..."); // mostly so we can see that the server is actually running
         cs = ss.accept();
         ThreadedServer ts = new ThreadedServer(cs);
         ts.start();
       }
-
-        /*threads.add(ts);
-        if(threads.size() == 4){
-          for(ThreadedServer t : threads)
-          {
-            t.start();
-          }
-        }
-
-        clientCount++;
-      } while (clientCount < NUM_CLIENTS); // continue accepting clients until we have enough connected*/
     } catch(IOException ioe){
       System.out.println("Something went wrong with connection");
       ioe.printStackTrace();
@@ -68,6 +52,10 @@ public class Server {
 
   class ThreadedServer extends Thread {
     private Socket cs = null; // Client Socket
+    private InputStream in = null;
+    private ObjectInputStream obIn = null;
+    private OutputStream out = null;
+    private ObjectOutputStream obOut = null;
 
     public ThreadedServer(Socket _cs) {
       cs = _cs;
@@ -78,13 +66,13 @@ public class Server {
       //set up IO
       System.out.println("In run");
       try {
+        in = cs.getInputStream();
+        obIn = new ObjectInputStream(in);
+
         out = cs.getOutputStream();
         obOut = new ObjectOutputStream(out);
 
         outputs.add(obOut); // store all players streams
-
-        in = cs.getInputStream();
-        obIn = new ObjectInputStream(in);
 
         //create typeRace object
         TypeRace tr = new TypeRace(PARAGRAPH);
@@ -93,7 +81,10 @@ public class Server {
         obOut.flush();
 
         Object ob = null;
-        while((ob=obIn.readObject()) != null){
+        //while((ob=obIn.readObject()) != null){
+        while(true){
+          ob=obIn.readObject(); // TODO solve error found here - java.io.StreamCorruptedException: invalid type code: 00
+
           if(ob instanceof TypeRace){
             tr = (TypeRace) ob;
 
@@ -131,7 +122,7 @@ public class Server {
 
             //add the winner to the vector
             winners.add(win);
-            //System.out.println(winners.size());
+            System.out.println(winners);
             //if the winners list is full, send it out to all the Clients
             if(winners.size() == 4){
               TypeRace raceOver = new TypeRace("");
